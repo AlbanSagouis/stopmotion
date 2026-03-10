@@ -1,0 +1,255 @@
+---
+title: "Stop motion editing with stopmotion: the laser dinosaur"
+vignette: >
+  %\VignetteIndexEntry{Stop motion editing with stopmotion: the laser dinosaur}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+format:
+  html:
+    toc: true
+knitr:
+  opts_chunk:
+    collapse: true
+    warning: false
+    comment: "#>"
+    fig.align: center
+---
+
+## Credit
+
+The dinosaur animation used throughout this vignette was created by
+**\@looksrawr** and is released under the
+[CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+
+---
+
+## Overview
+
+**stopmotion** is a pipeline-friendly toolkit for assembling and editing stop
+motion animations from sequences of still images.  Its functions fall into
+three families:
+
+| Family | Functions |
+|---|---|
+| Load | `read()` |
+| Restructure | `duplicate()`, `splice()` |
+| Transform | `rotate()`, `wiggle()`, `flip()`, `flop()`, `blur()`, `scale()`, `crop()`, `trim()`, `border()`, `background()`, `centre()` |
+| Display | `montage()`, `preview()` |
+
+All functions accept an optional `frames` argument so that any operation can
+target a precise subset of frames — the feature that sets **stopmotion** apart
+from plain **magick** pipelines.
+
+After each operation **stopmotion** prints a message listing the updated frame
+sequence.  These messages are shown in interactive sessions and suppressed
+automatically during document rendering.  To control verbosity explicitly, use
+`stopmotion_verbosity()` or set the option directly:
+
+```{r options}
+#| eval: true
+library(stopmotion)
+
+stopmotion_verbosity(FALSE) # silence for the rest of the session
+options(stopmotion.verbose = FALSE) # equivalent
+```
+Or edit your `.Rprofile` to save the option with `usethis::edit_r_profile()`
+
+This vignette walks through a complete editing session using the bundled
+`extdata/` frames: a ten-frame cartoon dinosaur whose eyes shoot a laser ray.
+
+---
+
+## 1  Loading a GIF
+
+The bundled `extdata/` directory contains the ten frames of the dinosaur
+animation as individual PNG files — exactly the kind of image sequence that
+**stopmotion** is designed to work with.  `read()` loads them in lexicographic
+order and returns a `magick-image` object accepted by every **stopmotion**
+function.
+
+```{r load}
+library(magick)
+
+dino_dir <- system.file("extdata", package = "stopmotion")
+dino <- read(dir = dino_dir)
+dino
+```
+
+```{r frame-count}
+cat("Number of frames:", length(dino), "\n")
+image_info(dino)[, c("width", "height", "filesize")]
+```
+
+Ten frames, 480 × 480 pixels.
+
+---
+
+## 2  Inspecting frames
+
+`montage` is a quick way to display all frames side-by-side.
+
+```{r montage}
+#| fig-width: 7
+#| fig-height: 2.5
+montage(dino, tile = "10x1", geometry = "64x64+2+2")
+```
+
+Scanning left to right you can read the story:
+
+* **Frames 1–4** — the dinosaur stands still, then opens its eyes.
+* **Frames 5–6** — eyes glow and start charging up.
+* **Frames 7–9** — the laser fires.
+* **Frame 10**   — the beam fades and the dinosaur looks pleased.
+
+---
+
+## 3  Building anticipation with `duplicate()`
+
+The charging phase (frames 5–6) flashes by too quickly.  `duplicate()` with
+`style = "looped"` inserts a copy of those frames immediately after the
+originals, making the build-up feel more deliberate.
+
+```{r duplicate}
+dino2 <- duplicate(dino, frames = 5:6, style = "looped")
+cat("Frames after duplicate():", length(dino2), "\n")
+```
+
+The `looped` style repeats the selected range in order, so the sequence
+becomes …5, 6, 5, 6… — a natural charging pulse.
+
+---
+
+## 4  Adding drama with `border()`
+
+A vivid red border on the laser frames (now frames 7–11 after the insertion)
+signals "danger" to the viewer.
+
+```{r border}
+dino3 <- border(dino2, color = "red", geometry = "8x8", frames = 7:11)
+```
+
+---
+
+## 5  Motion blur on the laser beam with `blur()`
+
+The three peak laser frames (frames 8–10) benefit from a subtle blur that
+conveys raw energy.
+
+```{r blur}
+dino4 <- blur(dino3, radius = 3, sigma = 1.5, frames = 8:10)
+```
+
+---
+
+## 6  Hand-held shake with `wiggle()`
+
+`wiggle()` inserts two slightly rotated copies after each selected frame —
+one tilted `+degrees`, one `−degrees` — creating the organic wobble typical
+of real stop motion.  We apply it to the quieter frames at the start so the
+calm contrast with the explosive laser section.
+
+```{r wiggle}
+dino5 <- wiggle(dino4, degrees = 2, frames = 1:3)
+cat("Total frames after wiggle():", length(dino5), "\n")
+```
+
+---
+
+## 7  Putting it together: the full pipeline
+
+The edits above can be chained into a single pipe for clarity.
+
+```{r pipeline}
+#| eval: true
+read(dir = system.file("extdata", package = "stopmotion")) |>
+  wiggle(degrees = 2, frames = 1:3) |>             # hand-held shake
+  duplicate(frames = 5:6, style = "looped") |>     # hold the charge
+  border(color = "red", geometry = "8x8",
+          frames = 7:11) |>                        # danger border
+  blur(radius = 3, sigma = 1.5, frames = 8:10) |>  # energy blur
+  preview(fps = 2)
+```
+
+---
+
+## 8  Exporting the result
+
+`magick::image_write_gif()` writes the edited sequence back to a GIF file.
+The `delay` argument controls playback speed (seconds per frame).
+
+```{r export}
+#| eval: false
+out <- tempfile(fileext = ".gif")
+image_write_gif(dino_final, path = out, delay = 1 / 8)
+message("Saved to: ", out)
+```
+
+---
+
+## 9  Other useful operations
+
+### 9.1  Dropping unwanted frames with `splice()`
+
+`splice()` inserts new frames after a given position.  Combined with standard
+**magick** subsetting you can also remove frames:
+
+```{r splice}
+#| eval: false
+# Insert a custom "RAWR!" title card after frame 4
+title_card <- image_blank(480, 480, color = "black") |>
+  image_annotate("RAWR!", size = 80, color = "red", gravity = "Center")
+
+dino_with_title <- splice(dino, insert = title_card, after = 4L)
+```
+
+### 9.2  Scaling down for the web
+
+`scale()` accepts any **magick** geometry string.
+
+```{r scale}
+#| eval: false
+dino_small <- scale(dino, geometry = "50%")
+```
+
+### 9.3  Cropping to the face
+
+```{r crop}
+#| eval: false
+# Keep a 200×200 window centred on the head (adjust offsets to taste)
+dino_face <- crop(dino, geometry = "200x200+140+60")
+```
+
+### 9.4  Aligning frames with `centre()`
+
+When frames drift slightly between photos, `centre()` performs an affine warp
+guided by two reference points per frame (e.g. left and right eye positions)
+so the subject stays locked in place across the whole animation.
+
+```{r centre}
+#| eval: false
+# Record two stable landmarks per frame (e.g. with locator())
+pts <- data.frame(
+  frame = c(1L, 1L, 2L, 2L),
+  x     = c(210, 270, 212, 269),
+  y     = c(160, 162, 158, 161)
+)
+dino_stabilised <- centre(dino, points = pts, reference = 1L)
+```
+
+---
+
+## Summary
+
+| Step | Function | Key argument |
+|---|---|---|
+| Hold charging frames | `duplicate()` | `style = "looped"` |
+| Red danger border | `border()` | `color`, `geometry` |
+| Energy motion blur | `blur()` | `radius`, `sigma` |
+| Hand-held shake | `wiggle()` | `degrees` |
+| Insert title card | `splice()` | `insert`, `after` |
+| Resize for web | `scale()` | `geometry` |
+| Crop to face | `crop()` | `geometry` |
+| Stabilise frames | `centre()` | `points`, `reference` |
+
+All of the above accept a `frames` argument to restrict the operation to any
+subset of frames, giving you frame-precise control over your animation.

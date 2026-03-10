@@ -1,0 +1,74 @@
+# Compute test coverage and store a self-hosted badge on the `coverage` branch.
+# Based on https://github.com/pachadotdev/armadillo4r/blob/main/.github/workflows/test-coverage.yaml
+# See also https://adamhsparks.netlify.app/2026/01/24/look-ma-no-codecov-io/
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-coverage
+
+permissions:
+  contents: write
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr
+          needs: coverage
+
+      - name: Compute coverage
+        shell: Rscript {0}
+        run: |
+          coverage <- covr::package_coverage(type = "all", quiet = FALSE)
+          percent_exact <- covr::percent_coverage(coverage)
+          percent <- floor(percent_exact)
+
+          color <- if (percent >= 90) "brightgreen" else
+                   if (percent >= 80) "green" else
+                   if (percent >= 70) "yellowgreen" else
+                   if (percent >= 60) "yellow" else
+                   if (percent >= 50) "orange" else "red"
+
+          writeLines(as.character(percent), "coverage_percent.txt")
+          writeLines(color, "coverage_color.txt")
+
+      - name: Generate badge SVG
+        run: |
+          COVERAGE=$(cat coverage_percent.txt)
+          COVERAGE_COLOR=$(cat coverage_color.txt)
+          mkdir -p badges
+          curl -s "https://raw.githubusercontent.com/pachadotdev/ghacoveragebadge/refs/heads/main/badges/${COVERAGE_COLOR}.svg" \
+            > badges/coverage.svg
+          sed -i "s/{{ COVERAGE }}/${COVERAGE}/g" badges/coverage.svg
+
+      - name: Commit badge to coverage branch
+        if: github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          cp badges/coverage.svg /tmp/coverage.svg
+          git checkout -B coverage
+          git rm -rf .
+          mkdir -p badges
+          cp /tmp/coverage.svg badges/coverage.svg
+          git add badges/coverage.svg
+          git commit -m "Update coverage badge [skip ci]"
+          git push --force origin coverage
+          git checkout main
