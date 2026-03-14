@@ -2,16 +2,21 @@
 % Please edit documentation in R/centre.R
 \name{centre}
 \alias{centre}
+\alias{center}
 \title{Align frames to a common set of reference points}
 \usage{
 centre(images, points, reference = 1L, frames = NULL)
+
+center(images, points, reference = 1L, frames = NULL)
 }
 \arguments{
 \item{images}{an object of class \code{magick-image} to modify}
 
 \item{points}{a \code{data.frame} with columns \code{frame} (integer frame
 index), \code{x} (numeric, pixels from the left edge), and \code{y}
-(numeric, pixels from the top edge). Exactly two rows per frame are
+(numeric, pixels from the \emph{bottom} edge, as returned by
+\code{locator()} after \code{plot(as.raster(images[[i]]))}). Exactly two
+rows per frame are
 required. Within each frame, the first row is reference point 1 and the
 second is reference point 2; the pairing must be consistent across frames
 (e.g. always left-eye first, right-eye second).}

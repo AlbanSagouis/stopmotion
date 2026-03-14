@@ -136,3 +136,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/r,macos,linux,windows
 /doc/
 /Meta/
+
+/.quarto/
+**/*.quarto_ipynb

@@ -352,6 +352,25 @@ test_that("trim() messages the frame sequence", {
   })
 })
 
+# ── border() regression: virtual-canvas offset on rotated frames ──────────────
+
+test_that("border() preserves canvas size when applied to a rotated frame", {
+  # Regression: image_rotate() leaves a virtual-canvas offset that caused
+  # image_crop() to return one pixel short on each axis, so the bordered frame
+  # shrank by 1px. image_flatten() in border() fixes this.
+  frame   <- magick::image_blank(10L, 10L, color = "white")
+  rotated <- magick::image_rotate(frame, degrees = 5)
+  rot_w   <- magick::image_info(rotated)$width
+  rot_h   <- magick::image_info(rotated)$height
+  images  <- c(frame, rotated)
+  result  <- suppressMessages(
+    border(images = images, color = "red", geometry = "2x2", frames = 2L)
+  )
+  info <- magick::image_info(result)
+  expect_equal(info$width[2L],  rot_w)
+  expect_equal(info$height[2L], rot_h)
+})
+
 # ── border() additional coverage ─────────────────────────────────────────────
 
 test_that("border() errors on frames below 1", {

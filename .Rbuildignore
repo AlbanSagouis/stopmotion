@@ -6,3 +6,5 @@
 ^cran-comments\.md$
 ^\.github$
 ^README\.md$
+^README\.rmd$
+^codemeta\.json$

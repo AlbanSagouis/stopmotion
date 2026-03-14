@@ -13,6 +13,7 @@ knitr:
     warning: false
     comment: "#>"
     fig.align: center
+    eval: false
 ---
 
 ## Credit
@@ -21,7 +22,7 @@ The dinosaur animation used throughout this vignette was created by
 **\@looksrawr** and is released under the
 [CC0 1.0 Universal Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/).
 
----
+* * *
 
 ## Overview
 
@@ -47,6 +48,8 @@ automatically during document rendering.  To control verbosity explicitly, use
 
 ```{r options}
 #| eval: true
+#| include: false
+library(magick)
 library(stopmotion)
 
 stopmotion_verbosity(FALSE) # silence for the rest of the session
@@ -57,7 +60,7 @@ Or edit your `.Rprofile` to save the option with `usethis::edit_r_profile()`
 This vignette walks through a complete editing session using the bundled
 `extdata/` frames: a ten-frame cartoon dinosaur whose eyes shoot a laser ray.
 
----
+* * *
 
 ## 1  Loading a GIF
 
@@ -68,27 +71,28 @@ order and returns a `magick-image` object accepted by every **stopmotion**
 function.
 
 ```{r load}
-library(magick)
-
+#| eval: true
 dino_dir <- system.file("extdata", package = "stopmotion")
 dino <- read(dir = dino_dir)
-dino
+dino |> preview(fps = 2)
 ```
 
 ```{r frame-count}
+#| eval: true
 cat("Number of frames:", length(dino), "\n")
 image_info(dino)[, c("width", "height", "filesize")]
 ```
 
 Ten frames, 480 × 480 pixels.
 
----
+* * *
 
 ## 2  Inspecting frames
 
 `montage` is a quick way to display all frames side-by-side.
 
 ```{r montage}
+#| eval: true
 #| fig-width: 7
 #| fig-height: 2.5
 montage(dino, tile = "10x1", geometry = "64x64+2+2")
@@ -101,47 +105,9 @@ Scanning left to right you can read the story:
 * **Frames 7–9** — the laser fires.
 * **Frame 10**   — the beam fades and the dinosaur looks pleased.
 
----
+* * *
 
-## 3  Building anticipation with `duplicate()`
-
-The charging phase (frames 5–6) flashes by too quickly.  `duplicate()` with
-`style = "looped"` inserts a copy of those frames immediately after the
-originals, making the build-up feel more deliberate.
-
-```{r duplicate}
-dino2 <- duplicate(dino, frames = 5:6, style = "looped")
-cat("Frames after duplicate():", length(dino2), "\n")
-```
-
-The `looped` style repeats the selected range in order, so the sequence
-becomes …5, 6, 5, 6… — a natural charging pulse.
-
----
-
-## 4  Adding drama with `border()`
-
-A vivid red border on the laser frames (now frames 7–11 after the insertion)
-signals "danger" to the viewer.
-
-```{r border}
-dino3 <- border(dino2, color = "red", geometry = "8x8", frames = 7:11)
-```
-
----
-
-## 5  Motion blur on the laser beam with `blur()`
-
-The three peak laser frames (frames 8–10) benefit from a subtle blur that
-conveys raw energy.
-
-```{r blur}
-dino4 <- blur(dino3, radius = 3, sigma = 1.5, frames = 8:10)
-```
-
----
-
-## 6  Hand-held shake with `wiggle()`
+## 3  Hand-held shake with `wiggle()`
 
 `wiggle()` inserts two slightly rotated copies after each selected frame —
 one tilted `+degrees`, one `−degrees` — creating the organic wobble typical
@@ -149,11 +115,52 @@ of real stop motion.  We apply it to the quieter frames at the start so the
 calm contrast with the explosive laser section.
 
 ```{r wiggle}
-dino5 <- wiggle(dino4, degrees = 2, frames = 1:3)
-cat("Total frames after wiggle():", length(dino5), "\n")
+#| eval: true
+dino_w <- wiggle(dino, degrees = 2, frames = 1:3)
+cat("Total frames after wiggle():", length(dino_w), "\n")
 ```
 
----
+* * *
+## 4  Building anticipation with `duplicate()`
+
+The charging phase (frames 5–6) flashes by too quickly.  `duplicate()` with
+`style = "looped"` inserts a copy of those frames immediately after the
+originals, making the build-up feel more deliberate.
+
+```{r dup-frames}
+#| eval: true
+dino2 <- duplicate(dino, frames = 5:6, style = "looped")
+cat("Frames after duplicate():", length(dino2), "\n")
+```
+
+The `looped` style repeats the selected range in order, so the sequence
+becomes …5, 6, 5, 6… — a natural charging pulse.
+
+* * *
+
+## 5  Adding drama with `border()`
+
+A vivid red border on the laser frames (now frames 7–11 after the insertion)
+signals "danger" to the viewer.
+
+```{r border}
+#| eval: true
+dino3 <- border(dino2, color = "red", geometry = "8x8", frames = 7:11)
+```
+
+* * *
+
+## 6  Motion blur on the laser beam with `blur()`
+
+The three peak laser frames (frames 8–10) benefit from a subtle blur that
+conveys raw energy.
+
+```{r blur}
+#| eval: true
+dino4 <- blur(dino3, radius = 3, sigma = 1.5, frames = 8:10)
+```
+
+* * *
 
 ## 7  Putting it together: the full pipeline
 
@@ -170,7 +177,7 @@ read(dir = system.file("extdata", package = "stopmotion")) |>
   preview(fps = 2)
 ```
 
----
+* * *
 
 ## 8  Exporting the result
 
@@ -178,23 +185,87 @@ read(dir = system.file("extdata", package = "stopmotion")) |>
 The `delay` argument controls playback speed (seconds per frame).
 
 ```{r export}
-#| eval: false
 out <- tempfile(fileext = ".gif")
 image_write_gif(dino_final, path = out, delay = 1 / 8)
 message("Saved to: ", out)
 ```
 
----
+* * *
 
-## 9  Other useful operations
+## 9  The celebratory somersault: `flip()`, `flop()`, and `rotate()`
 
-### 9.1  Dropping unwanted frames with `splice()`
+Once the laser fades, the dinosaur celebrates with a somersault.  This example
+chains three pure geometric transforms — each applied to a precise subset of
+frames — to choreograph a full forward flip.
+
+| Step | Function | Visual effect |
+|---|---|---|
+| Mirror left–right | `flop()` | Dino faces left for the run-up |
+| Lean forward 90° | `rotate()` | Start of the forward flip |
+| Upside-down apex | `flip()` | Top-to-bottom mirror at the peak |
+| Lean back 270° | `rotate()` | Completing the circle |
+| Loop it twice | `duplicate()` | Two full somersaults |
+
+```{r somersault-flop}
+#| eval: true
+# Frames 1–2: mirror horizontally so the dino faces left (run-up)
+dino_s <- flop(dino, frames = 1:2)
+```
+
+```{r somersault-rotate1}
+#| eval: true
+# Frame 3: rotate 90° — leaning forward into the jump
+dino_s <- rotate(dino_s, degrees = 90, frames = 3L)
+```
+
+```{r somersault-flip}
+#| eval: true
+# Frame 4: flip vertically — upside-down at the apex of the somersault
+dino_s <- flip(dino_s, frames = 4L)
+```
+
+```{r somersault-rotate2}
+#| eval: true
+# Frame 5: rotate 270° — coming back around to land upright
+dino_s <- rotate(dino_s, degrees = 270, frames = 5L)
+```
+
+```{r somersault-loop}
+#| eval: true
+# Duplicate the spin frames so the dino does two full somersaults
+dino_s <- duplicate(dino_s, frames = 1:5, style = "looped")
+cat("Frames after duplication:", length(dino_s), "\n")
+```
+
+The five steps collapse into a single pipe:
+
+```{r somersault-pipeline}
+#| eval: true
+dino_somersault <- dino |>
+  flop(frames = 1:2)               |>   # run-up: face left
+  rotate(degrees = 90,  frames = 3L) |> # lean into the jump
+  flip(frames = 4L)                |>   # upside-down apex
+  rotate(degrees = 270, frames = 5L) |> # complete the circle
+  duplicate(frames = 1:5, style = "looped") # loop it twice
+
+montage(dino_somersault[1:10], tile = "10x1", geometry = "64x64+2+2")
+```
+
+```{r somersault-preview}
+#| eval: true
+dino_somersault |> preview(fps = 2)
+```
+
+* * *
+
+## 10  Other useful operations
+
+### 10.1  Dropping unwanted frames with `splice()`
 
 `splice()` inserts new frames after a given position.  Combined with standard
 **magick** subsetting you can also remove frames:
 
 ```{r splice}
-#| eval: false
 # Insert a custom "RAWR!" title card after frame 4
 title_card <- image_blank(480, 480, color = "black") |>
   image_annotate("RAWR!", size = 80, color = "red", gravity = "Center")
@@ -202,41 +273,98 @@ title_card <- image_blank(480, 480, color = "black") |>
 dino_with_title <- splice(dino, insert = title_card, after = 4L)
 ```
 
-### 9.2  Scaling down for the web
+### 10.2  Scaling down for the web
 
 `scale()` accepts any **magick** geometry string.
 
 ```{r scale}
-#| eval: false
 dino_small <- scale(dino, geometry = "50%")
 ```
 
-### 9.3  Cropping to the face
+### 10.3  Cropping to the face
 
 ```{r crop}
-#| eval: false
 # Keep a 200×200 window centred on the head (adjust offsets to taste)
 dino_face <- crop(dino, geometry = "200x200+140+60")
 ```
 
-### 9.4  Aligning frames with `centre()`
+### 10.4  Aligning frames with `centre()`
 
-When frames drift slightly between photos, `centre()` performs an affine warp
-guided by two reference points per frame (e.g. left and right eye positions)
-so the subject stays locked in place across the whole animation.
+When frames drift slightly between photos — a common artefact of hand-held
+stop motion — `centre()` performs a full affine warp (translation, rotation,
+and scaling simultaneously) so the subject stays locked in place across the
+whole animation.  It needs exactly **two landmarks per frame**: consistent
+anatomical anchors such as the left and right eye.  The `reference` frame
+defines the target position; every other frame is warped to match it.
 
-```{r centre}
-#| eval: false
-# Record two stable landmarks per frame (e.g. with locator())
-pts <- data.frame(
-  frame = c(1L, 1L, 2L, 2L),
-  x     = c(210, 270, 212, 269),
-  y     = c(160, 162, 158, 161)
-)
-dino_stabilised <- centre(dino, points = pts, reference = 1L)
+#### Collecting landmarks interactively
+
+The most practical way to record landmarks is `locator()` from base R.
+Click the two anchors on each frame in turn (always in the same order),
+and build up the data frame row by row.  `locator()` returns `y` measured
+from the **bottom** edge of the plot, which is the convention `centre()`
+expects:
+
+```{r centre-locator}
+# Run once per editing session — requires an interactive graphics device.
+# Display each frame, click the two landmarks, store the coordinates.
+pts_list <- lapply(seq_along(dino), function(i) {
+  plot(as.raster(dino[i])) # display frame i
+  message("Frame ", i, ": click LEFT eye then RIGHT eye")
+  p <- locator(2L) # two clicks; y is from the bottom edge
+  data.frame(frame = i, x = p$x, y = p$y)
+})
+pts <- do.call(rbind, pts_list)
 ```
 
----
+#### A worked example with artificial drift
+
+The bundled dino is a clean digital sprite with no accidental drift, so the
+example below **introduces** known drift first via a pure-translation affine
+warp, then corrects it — making the fix unambiguous.
+
+Frame 2 is shifted +5 px right / +3 px down; frame 3 is shifted −4 px left /
++2 px down (all in ImageMagick's top-edge coordinate system used by
+`image_distort`).  The landmark table is in the bottom-edge convention that
+`centre()` expects.
+
+```{r centre}
+#| eval: true
+# Introduce known translational drift.  Two widely-spaced control-point pairs
+# both encoding the same displacement define a pure translation.
+# Coordinates are in ImageMagick top-edge convention for image_distort.
+dino_d <- c(
+  dino[1],
+  magick::image_distort(dino[2], "Affine",        # +5 right, +3 down
+    c(100, 100, 105, 103,  380, 380, 385, 383)),
+  magick::image_distort(dino[3], "Affine",        # −4 left, +2 down
+    c(100, 100,  96, 102,  380, 380, 376, 382)),
+  dino[4:10]
+)
+
+# Eye positions in the drifted sequence — y from the bottom edge (locator convention).
+# Frame 1 reference (unchanged):       left (212, 271), right (272, 270).
+# Frame 2 shifted (+5 right, +3 down): left (217, 268), right (277, 267).
+# Frame 3 shifted (−4 left,  +2 down): left (208, 269), right (268, 268).
+pts <- data.frame(
+  frame = c(1L, 1L, 2L, 2L, 3L, 3L),
+  x     = c(212, 272, 217, 277, 208, 268),
+  y     = c(271, 270, 268, 267, 269, 268)
+)
+
+# Correct only the drifted frames; leave 4–10 untouched.
+dino_stabilised <- centre(dino_d, points = pts, reference = 1L, frames = 2:3)
+```
+
+Compare the original drifted sequence with the stabilised one:
+
+```{r centre-compare}
+#| eval: true
+montage(dino_d[1:3],          tile = "3x1", geometry = "128x128+2+2")
+montage(dino_stabilised[1:3], tile = "3x1", geometry = "128x128+2+2")
+```
+
+* * *
 
 ## Summary
 
@@ -250,6 +378,9 @@ dino_stabilised <- centre(dino, points = pts, reference = 1L)
 | Resize for web | `scale()` | `geometry` |
 | Crop to face | `crop()` | `geometry` |
 | Stabilise frames | `centre()` | `points`, `reference` |
+| Mirror left–right | `flop()` | `frames` |
+| Mirror top–bottom | `flip()` | `frames` |
+| Rotate by angle | `rotate()` | `degrees` |
 
 All of the above accept a `frames` argument to restrict the operation to any
 subset of frames, giving you frame-precise control over your animation.

@@ -9,7 +9,7 @@
 #'   Both \code{+degrees} and \code{-degrees} are applied automatically.
 #' @inheritSection duplicate Verbosity
 #' @inheritParams duplicate
-#' @importFrom magick image_rotate
+#' @importFrom magick image_rotate image_info image_background image_crop
 #' @returns a \code{magick-image} object with 2 extra frames per selected frame.
 #' @examples \dontrun{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
@@ -29,12 +29,19 @@ wiggle <- function(images, degrees = 3, frames = NULL) {
   offset <- 0L
   for (i in frames) {
     j <- i + offset
+    info_j    <- image_info(images[j])
+    orig_geom <- sprintf("%dx%d", info_j$width[1L], info_j$height[1L])
+    # Set the fill for rotation to the frame's own background colour (sampled
+    # from the top-left corner) so the rotation corners blend in seamlessly.
+    bg_raw  <- as.integer(magick::image_data(image_crop(images[j], "1x1+0+0"), channels = "rgba"))
+    bg_hex  <- sprintf("#%02x%02x%02x", bg_raw[1L], bg_raw[2L], bg_raw[3L])
+    img_j   <- image_background(images[j], bg_hex)
     after_seq <- if (j < length(images)) seq(j + 1L, length(images)) else integer(0)
     images <- c(
       images[seq_len(j - 1L)],
       images[j],
-      image_rotate(image = images[j], degrees = degrees),
-      image_rotate(image = images[j], degrees = -degrees),
+      image_crop(image_rotate(image = img_j, degrees =  degrees), orig_geom, repage = TRUE),
+      image_crop(image_rotate(image = img_j, degrees = -degrees), orig_geom, repage = TRUE),
       images[after_seq]
     )
     labels <- c(

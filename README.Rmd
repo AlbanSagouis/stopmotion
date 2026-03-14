@@ -1,33 +1,59 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "inst/figures/README-",
+  out.width = "100%"
+)
+
+library(covr)
+coverage <- floor(percent_coverage(package_coverage()))
+
+# Create badge colour based on coverage
+if (coverage >= 90) {
+  colour <- "brightgreen"
+} else if (coverage >= 80) {
+  colour <- "green"
+} else if (coverage >= 70) {
+  colour <- "yellowgreen"
+} else if (coverage >= 60) {
+  colour <- "yellow"
+} else if (coverage >= 50) {
+  colour <- "orange"
+} else {
+  colour <- "red"
+}
+```
+
+
 # stopmotion
-
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml)
-\[![Code Coverage:
-99%](https://img.shields.io/badge/code_coverage-99%25-brightgreen)\]
+[![Code Coverage: `r coverage`%](https://img.shields.io/badge/code_coverage-`r coverage`%25-`r colour`)]
 
-A pipeline-friendly toolkit for assembling and editing stop motion
-animations from sequences of still images. **stopmotion** wraps the
+A pipeline-friendly toolkit for assembling and editing stop motion animations
+from sequences of still images.  **stopmotion** wraps the
 [magick](https://docs.ropensci.org/magick/) package and adds frame-level
-control that plain **magick** pipelines lack: every function accepts a
-`frames` argument so that any operation can target a precise subset of
-frames.
+control that plain **magick** pipelines lack: every function accepts a `frames`
+argument so that any operation can target a precise subset of frames.
 
 ## Installation
 
 Install the released version from CRAN:
 
-``` r
+```r
 install.packages("stopmotion")
 ```
 
 Or install the development version from GitHub:
 
-``` r
+```r
 remotes::install_github(
     repo = "AlbanSagouis/stopmotion@dev",
     build_manual = TRUE,
@@ -38,7 +64,7 @@ remotes::install_github(
 ## Overview
 
 | Family | Functions |
-|----|----|
+|---|---|
 | Load | `read()` |
 | Restructure | `duplicate()`, `splice()`, `arrange()` |
 | Transform | `rotate()`, `wiggle()`, `flip()`, `flop()`, `blur()`, `scale()`, `crop()`, `trim()`, `border()`, `background()`, `centre()` |
@@ -46,7 +72,7 @@ remotes::install_github(
 
 ## Quick start
 
-``` r
+```r
 library(stopmotion)
 
 # Load all PNG frames from a folder (sorted lexicographically — name files
@@ -69,11 +95,12 @@ duplicate(images, frames = 3:4, style = "looped") |>
     preview(fps = 10)
 ```
 
-After each operation **stopmotion** prints a message listing the updated
-frame sequence in interactive sessions. Use
-`stopmotion_verbosity(FALSE)` to silence these messages, or add
-`options(stopmotion.verbose = FALSE)` to your `.Rprofile`.
+After each operation **stopmotion** prints a message listing the updated frame
+sequence in interactive sessions.  Use `stopmotion_verbosity(FALSE)` to silence
+these messages, or add `options(stopmotion.verbose = FALSE)` to your
+`.Rprofile`.
 
 ## License
 
 MIT © Alban Sagouis
+ 

@@ -8,7 +8,9 @@
 #'
 #' @param points a \code{data.frame} with columns \code{frame} (integer frame
 #'   index), \code{x} (numeric, pixels from the left edge), and \code{y}
-#'   (numeric, pixels from the top edge). Exactly two rows per frame are
+#'   (numeric, pixels from the \emph{bottom} edge, as returned by
+#'   \code{locator()} after \code{plot(as.raster(images[[i]]))}). Exactly two
+#'   rows per frame are
 #'   required. Within each frame, the first row is reference point 1 and the
 #'   second is reference point 2; the pairing must be consistent across frames
 #'   (e.g. always left-eye first, right-eye second).
@@ -42,10 +44,13 @@ centre <- function(images, points, reference = 1L, frames = NULL) {
   checkmate::assert_numeric(points$x)
   checkmate::assert_numeric(points$y)
   checkmate::assert_integerish(reference, len = 1L)
+
   if (is.null(frames)) {
     frames <- seq_along(images)
   }
   checkmate::assert_integerish(frames, lower = 1L, upper = length(images))
+
+  img_height <- magick::image_info(images[1L])$height
 
   ref_pts <- points[points$frame == reference, c("x", "y")]
   if (nrow(ref_pts) != 2L) {
@@ -55,13 +60,6 @@ centre <- function(images, points, reference = 1L, frames = NULL) {
       nrow(ref_pts)
     ))
   }
-
-  target_coords <- c(
-    ref_pts$x[[1L]],
-    ref_pts$y[[1L]],
-    ref_pts$x[[2L]],
-    ref_pts$y[[2L]]
-  )
 
   labels <- get_labels(images)
 
@@ -81,13 +79,13 @@ centre <- function(images, points, reference = 1L, frames = NULL) {
 
     control_pts <- c(
       src_pts$x[[1L]],
-      src_pts$y[[1L]],
-      target_coords[[1L]],
-      target_coords[[2L]],
+      img_height - src_pts$y[[1L]],
+      ref_pts$x[[1L]],
+      img_height - ref_pts$y[[1L]],
       src_pts$x[[2L]],
-      src_pts$y[[2L]],
-      target_coords[[3L]],
-      target_coords[[4L]]
+      img_height - src_pts$y[[2L]],
+      ref_pts$x[[2L]],
+      img_height - ref_pts$y[[2L]]
     )
 
     after_seq <- if (i < length(images)) {
@@ -100,7 +98,8 @@ centre <- function(images, points, reference = 1L, frames = NULL) {
       image_distort(
         image = images[i],
         distortion = "Affine",
-        coordinates = control_pts
+        coordinates = control_pts,
+        bestfit = FALSE
       ),
       images[after_seq]
     )
@@ -111,3 +110,7 @@ centre <- function(images, points, reference = 1L, frames = NULL) {
   print_frames(images, fn_name = "centre")
   images
 }
+
+#' @rdname centre
+#' @export
+center <- centre
