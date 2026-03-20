@@ -33,7 +33,7 @@ Splice frames into a film
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   splice(images = images, insert = magick::wizard, after = 1)

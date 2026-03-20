@@ -42,7 +42,7 @@ Arranges selected frames into a single composite image.
 Wraps \code{magick::image_montage}.
 }
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   montage(images)

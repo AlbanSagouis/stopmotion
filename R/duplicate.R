@@ -21,7 +21,7 @@
 #'   \code{stopmotion_verbosity(FALSE)} to suppress these messages, or set
 #'   \code{options(stopmotion.verbose = FALSE)} in your script or
 #'   \file{.Rprofile}.
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   duplicate(images = images, style = "shuffle", frames = 1:2)

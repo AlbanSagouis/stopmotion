@@ -33,7 +33,7 @@ animation opens in the system viewer; in a knitr/Quarto document it is
 embedded as an inline animated GIF.  Wraps \code{magick::image_animate}.
 }
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   preview(images)

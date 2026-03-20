@@ -21,7 +21,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_distort
 #' @returns a \code{magick-image} object of the same length as \code{images}.
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'
@@ -32,7 +32,7 @@
 #'     y     = c(180, 182, 176, 179, 183, 181)
 #'   )
 #'
-#'   centre(images = images, points = points, reference = 1L)
+#'   centre(images = images, points = points, reference = 1L, frames = 1:3)
 #' }
 #' @export
 

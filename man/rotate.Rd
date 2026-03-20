@@ -32,7 +32,7 @@ transformations. For a small-angle hand-held rock effect, see
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   rotate(images = images, degrees = 90, frames = 2L)

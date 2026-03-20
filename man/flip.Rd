@@ -28,7 +28,7 @@ Flip images vertically
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   flip(images = images, frames = 2:3)

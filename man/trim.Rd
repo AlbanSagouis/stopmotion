@@ -32,7 +32,7 @@ colour and trimming uniform edges. Wraps \code{magick::image_trim}.
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   trim(images = images)

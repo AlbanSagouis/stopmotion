@@ -15,7 +15,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_montage image_convert
 #' @returns a \code{magick-image} object containing a single composite frame.
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   montage(images)

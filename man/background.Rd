@@ -31,7 +31,7 @@ Set the background colour of images
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   background(images = images, color = "white")

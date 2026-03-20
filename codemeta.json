@@ -2,7 +2,7 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "stopmotion",
-  "description": "A pipeline-friendly toolkit for assembling stop motion animations from sequences of still images. Provides functions to read image directories, restructure frame sequences (duplicate, splice, arrange), apply per-frame pixel transformations (rotate, wiggle, flip, flop, blur, scale, crop, trim, border, background), and export the result as a GIF. All transformation functions accept a 'frames' argument to target any subset of frames, bridging the gap between 'magick' functions that operate on an entire image stack and fine-grained stop motion editing.",
+  "description": "A pipeline-friendly toolkit for assembling stop motion animations from sequences of still images. Provides functions to read image directories, restructure frame sequences (duplicate, splice, arrange), apply per-frame pixel transformations (rotate, wiggle, flip, flop, blur, scale, crop, trim, border, background), and export the result as a GIF. All transformation functions accept a 'frames' argument to target any subset of frames, bridging the gap between 'magick' functions that operate on an entire image stack and fine-grained stop motion editing. Image processing is performed via 'ImageMagick Studio LLC' (2024) <https://imagemagick.org>.",
   "name": "stopmotion: Build Stop Motion Animations from Image Sequences",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.1.0",
@@ -117,7 +117,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "198.191KB",
+  "fileSize": "198.483KB",
   "codeRepository": "https://github.com/AlbanSagouis/stopmotion",
   "releaseNotes": "https://github.com/AlbanSagouis/stopmotion/blob/master/NEWS.md",
   "readme": "https://github.com/AlbanSagouis/stopmotion/blob/main/README.md",

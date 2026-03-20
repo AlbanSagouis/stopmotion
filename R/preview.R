@@ -16,7 +16,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_animate image_info image_annotate
 #' @returns a \code{magick-image} object containing the animated sequence.
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   preview(images)

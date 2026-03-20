@@ -6,7 +6,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_background
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   background(images = images, color = "white")

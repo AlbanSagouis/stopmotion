@@ -30,7 +30,7 @@ Wraps \code{magick::image_flop}.
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   flop(images = images)

@@ -35,7 +35,7 @@ if (coverage >= 90) {
 # stopmotion
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml)
-[![Code Coverage: `r coverage`%](https://img.shields.io/badge/code_coverage-`r coverage`%25-`r colour`)]
+![Code Coverage: `r coverage`%](https://img.shields.io/badge/code_coverage-`r coverage`%25-`r colour`)
 
 A pipeline-friendly toolkit for assembling and editing stop motion animations
 from sequences of still images.  **stopmotion** wraps the
@@ -103,4 +103,3 @@ these messages, or add `options(stopmotion.verbose = FALSE)` to your
 ## License
 
 MIT © Alban Sagouis
- 

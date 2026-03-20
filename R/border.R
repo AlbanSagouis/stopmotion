@@ -11,7 +11,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_border image_crop image_info
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   border(images = images, color = "black", geometry = "5x5")

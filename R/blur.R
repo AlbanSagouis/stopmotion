@@ -9,7 +9,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_blur
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   blur(images = images, radius = 2, sigma = 1)

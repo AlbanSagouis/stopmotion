@@ -9,7 +9,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_trim
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   trim(images = images)

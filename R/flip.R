@@ -4,7 +4,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_flip
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   flip(images = images, frames = 2:3)

@@ -35,7 +35,7 @@ Adds a coloured border around selected frames. Wraps
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   border(images = images, color = "black", geometry = "5x5")

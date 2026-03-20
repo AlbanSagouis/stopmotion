@@ -48,7 +48,7 @@ correspondences via \code{magick::image_distort}.
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
 
@@ -59,6 +59,6 @@ correspondences via \code{magick::image_distort}.
     y     = c(180, 182, 176, 179, 183, 181)
   )
 
-  centre(images = images, points = points, reference = 1L)
+  centre(images = images, points = points, reference = 1L, frames = 1:3)
 }
 }

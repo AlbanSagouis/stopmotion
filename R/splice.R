@@ -9,7 +9,7 @@
 #' @inheritSection duplicate Verbosity
 #' @inheritParams duplicate
 #' @returns a \code{magick-image} object
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   splice(images = images, insert = magick::wizard, after = 1)

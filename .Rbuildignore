@@ -3,8 +3,11 @@
 ^doc$
 ^Meta$
 ^.claude$
+^.agents$
 ^cran-comments\.md$
 ^\.github$
 ^README\.md$
 ^README\.rmd$
+^README\.html$
 ^codemeta\.json$
+^CRAN-SUBMISSION$

@@ -11,7 +11,7 @@
 #' @inheritParams duplicate
 #' @importFrom magick image_rotate image_info image_background image_crop
 #' @returns a \code{magick-image} object with 2 extra frames per selected frame.
-#' @examples \dontrun{
+#' @examples \donttest{
 #'   dino_dir <- system.file("extdata", package = "stopmotion")
 #'   images <- read(dir = dino_dir)
 #'   wiggle(images = images, degrees = 3, frames = 1:2)

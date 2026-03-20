@@ -31,9 +31,10 @@ lexicographic filename sort does not match the intended frame sequence.
 }
 
 \examples{
-\dontrun{
-  images <- read(dir = "../frames/")
+\donttest{
+  dino_dir <- system.file("extdata", package = "stopmotion")
+  images <- read(dir = dino_dir)
   # Swap the first and second frame.
-  images <- arrange(images, order = c(2L, 1L, 3L))
+  images <- arrange(images, order = c(2L, 1L, seq(3L, 10L)))
 }
 }

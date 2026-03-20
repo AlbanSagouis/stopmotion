@@ -31,7 +31,7 @@ Reads all image files from \code{dir} (optionally filtered by
 }
 
 \examples{
- \dontrun{
+ \donttest{
    dino_dir <- system.file("extdata", package = "stopmotion")
    images <- read(dir = dino_dir)
 }

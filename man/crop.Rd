@@ -39,7 +39,7 @@ Crops selected frames to a given geometry. Wraps \code{magick::image_crop}.
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   crop(images = images, geometry = "200x200+50+50")

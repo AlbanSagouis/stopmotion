@@ -41,7 +41,7 @@ Duplicate frames
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   duplicate(images = images, style = "shuffle", frames = 1:2)

@@ -1,4 +1,13 @@
 .claude/
+.agents/
+
+/doc/
+/Meta/
+
+/.quarto/
+**/*.quarto_ipynb
+
+README.html
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/r,macos,linux,windows
@@ -134,8 +143,3 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/r,macos,linux,windows
-/doc/
-/Meta/
-
-/.quarto/
-**/*.quarto_ipynb

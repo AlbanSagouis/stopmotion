@@ -31,7 +31,7 @@ Scale images
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   scale(images = images, geometry = "50\%")

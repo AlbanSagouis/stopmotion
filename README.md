@@ -7,8 +7,8 @@
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AlbanSagouis/stopmotion/actions/workflows/R-CMD-check.yaml)
-\[![Code Coverage:
-99%](https://img.shields.io/badge/code_coverage-99%25-brightgreen)\]
+![Code Coverage:
+99%](https://img.shields.io/badge/code_coverage-99%25-brightgreen)
 
 A pipeline-friendly toolkit for assembling and editing stop motion
 animations from sequences of still images. **stopmotion** wraps the

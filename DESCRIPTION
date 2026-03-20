@@ -15,7 +15,8 @@ Description: A pipeline-friendly toolkit for assembling stop motion animations
     border, background), and export the result as a GIF. All transformation
     functions accept a 'frames' argument to target any subset of frames, bridging
     the gap between 'magick' functions that operate on an entire image stack and
-    fine-grained stop motion editing.
+    fine-grained stop motion editing. Image processing is performed via
+    'ImageMagick Studio LLC' (2024) <https://imagemagick.org>.
 Imports:
   magick,
   checkmate

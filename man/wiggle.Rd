@@ -34,7 +34,7 @@ stop-motion rock effect. For large-angle permanent rotations, see
 }
 
 \examples{
-\dontrun{
+\donttest{
   dino_dir <- system.file("extdata", package = "stopmotion")
   images <- read(dir = dino_dir)
   wiggle(images = images, degrees = 3, frames = 1:2)
