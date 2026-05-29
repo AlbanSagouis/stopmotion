@@ -28,11 +28,7 @@ install.packages("stopmotion")
 Or install the development version from GitHub:
 
 ``` r
-remotes::install_github(
-    repo = "AlbanSagouis/stopmotion@dev",
-    build_manual = TRUE,
-    build_vignettes = TRUE
-)
+pak::pkg_install("AlbanSagouis/stopmotion@dev")
 ```
 
 ## Overview
